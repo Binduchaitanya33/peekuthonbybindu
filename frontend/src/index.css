@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    @apply bg-background text-foreground;
+  }
+
+  body {
+    @apply min-h-screen antialiased;
+  }
+
+  * {
+    @apply border-secondary;
+  }
+}
+
+@layer components {
+  .container {
+    @apply px-container max-w-2xl mx-auto;
+  }
+
+  .card {
+    @apply rounded-lg bg-card p-6 shadow-lg transition-all duration-200;
+  }
+
+  .input {
+    @apply rounded-lg bg-input px-4 py-2 text-foreground outline-none ring-primary focus:ring-2;
+  }
+
+  .button {
+    @apply rounded-lg px-4 py-2 font-medium transition-all duration-200
+    focus:outline-none focus:ring-2 focus:ring-primary
+    disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .button-primary {
+    @apply button bg-primary text-primary-foreground hover:opacity-90;
+  }
+
+  .button-secondary {
+    @apply button bg-secondary text-secondary-foreground hover:opacity-90;
+  }
+
+  .button-destructive {
+    @apply button bg-destructive text-destructive-foreground hover:opacity-90;
+  }
+
+  .animate-fade {
+    @apply animate-fade-in;
+  }
+
+  .animate-slide {
+    @apply animate-slide-up;
+  }
+}
