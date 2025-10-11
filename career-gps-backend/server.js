@@ -15,7 +15,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173',  // Explicitly match the frontend origin
+    origin: ['http://localhost:5173', 'https://peekuthonbybindu.onrender.com'],  // Explicitly match the frontend origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,  // Allow credentials
