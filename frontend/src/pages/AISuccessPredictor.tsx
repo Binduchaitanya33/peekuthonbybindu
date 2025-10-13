@@ -1,58 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Sparkles } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PredictionChart from '../components/PredictionChart';
 import { fadeInUp, staggerContainer } from '../animations/motionVariants';
+import axios from 'axios';
 
 export default function AISuccessPredictor() {
+
   const [formData, setFormData] = useState({
     skills: '',
     education: '',
     experience: '',
   });
   const [prediction, setPrediction] = useState<number | null>(null);
+  const [skillMap, setSkillMap] = useState<{ [key: string]: number }>({});
+
+  // Fetch skill-to-index mapping on mount
+  useEffect(() => {
+    axios.get('http://localhost:5003/api/skills')
+      .then(res => {
+        const map: { [key: string]: number } = {};
+        if (res.data && res.data.skills) {
+          res.data.skills.forEach((item: { skill: string, index: number }) => {
+            map[item.skill.trim().toLowerCase()] = item.index;
+          });
+        }
+        setSkillMap(map);
+      })
+      .catch(() => setSkillMap({}));
+  }, []);
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // The frontend no longer needs the hardcoded skill_indices or the mapping logic.
-    // It just needs to send the raw skill string and the other variables.
+    // Map education to an integer (customize as per your model)
+    let degreeLevel = 0;
+    if (formData.education === 'Bachelors') degreeLevel = 1;
+    else if (formData.education === 'Masters') degreeLevel = 2;
+    else if (formData.education === 'PhD') degreeLevel = 3;
+
+    // Map entered skills to indices using skillMap
+    const enteredSkills = formData.skills
+      .split(',')
+      .map(s => s.trim().toLowerCase())
+      .filter(s => s.length > 0);
+    const skill_indices = enteredSkills
+      .map(skill => skillMap[skill])
+      .filter(idx => typeof idx === 'number');
+
     const payload = {
-      // Send the raw skill string from the textarea
-      skills: formData.skills,
-
-      // Total experience in months
-      total_experience_months: parseInt(formData.experience || "0") * 12,
-
-      // Map education level to numerical value
-      highest_degree_level:
-        formData.education === "PhD"
-          ? 3
-          : formData.education === "Masters"
-            ? 2
-            : 1, // Assuming Bachelors or other means 1
+      skill_indices,
+      years_experience: Number(formData.experience),
+      highest_degree_level: degreeLevel,
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:5003/api/predict_success", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setPrediction(data.success_rate);
-      } else {
-        console.error("Prediction failed:", data);
-        alert("Prediction failed: " + data.detail);
-      }
+      const response = await axios.post('http://localhost:5003/api/predict_success', payload);
+      setPrediction(Math.round(response.data.success_rate * 100)); // Convert 0-1 float to percentage
     } catch (error) {
-      console.error("Error connecting to API:", error);
-      alert("Error connecting to backend API.");
+      alert('Prediction failed. Please try again.');
+      setPrediction(null);
     }
   };
 
@@ -160,36 +171,36 @@ export default function AISuccessPredictor() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white rounded-xl shadow-md p-8">
-                  <h2 className="text-2xl font-bold text-text-primary mb-6 text-center">
+                <div className="bg-gray-900 rounded-xl shadow-md p-8 border-2 border-primary">
+                  <h2 className="text-3xl font-extrabold text-white mb-6 text-center drop-shadow-lg">
                     Your Success Score
                   </h2>
                   <PredictionChart percentage={prediction} />
                   <div className="mt-8 space-y-4">
-                    <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
-                      <p className="text-lg font-semibold text-text-primary mb-2">
+                    <div className="bg-primary/90 rounded-lg p-4">
+                      <p className="text-xl font-bold text-white mb-2">
                         {prediction >= 80
                           ? "You're excellently prepared for your dream role!"
                           : prediction >= 60
-                            ? "You're on the right track, keep building your skills!"
-                            : "There's room for growth - focus on expanding your expertise!"}
+                          ? "You're on the right track, keep building your skills!"
+                          : "There's room for growth - focus on expanding your expertise!"}
                       </p>
-                      <p className="text-sm text-gray-700">
+                      <p className="text-base text-white/90">
                         {prediction >= 80
                           ? "Your combination of skills, education, and experience positions you as a strong candidate. Consider applying to senior roles."
                           : prediction >= 60
-                            ? "Continue developing your skill set and working on impactful projects to boost your readiness score."
-                            : "Focus on gaining more practical experience, building projects, and expanding your technical skills."}
+                          ? "Continue developing your skill set and working on impactful projects to boost your readiness score."
+                          : "Focus on gaining more practical experience, building projects, and expanding your technical skills."}
                       </p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-background-light rounded-lg p-4">
-                        <p className="text-sm text-text-secondary mb-1">Next Steps</p>
-                        <p className="font-semibold text-text-primary">Connect with Mentors</p>
+                      <div className="bg-gray-800 rounded-lg p-4">
+                        <p className="text-sm text-primary mb-1">Next Steps</p>
+                        <p className="font-semibold text-white">Connect with Mentors</p>
                       </div>
-                      <div className="bg-background-light rounded-lg p-4">
-                        <p className="text-sm text-text-secondary mb-1">Recommended</p>
-                        <p className="font-semibold text-text-primary">Skill Development</p>
+                      <div className="bg-gray-800 rounded-lg p-4">
+                        <p className="text-sm text-primary mb-1">Recommended</p>
+                        <p className="font-semibold text-white">Skill Development</p>
                       </div>
                     </div>
                   </div>
