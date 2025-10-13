@@ -56,6 +56,9 @@ app.use("/api/mentors", mentorRoutes);
 app.use("/api/materials", materialRoutes);
 app.use("/api/ai", aiRoutes);
 
+// Health Check Route
+app.get("/api/health", (req, res) => res.status(200).json({ status: "ok" }));
+
 // Default Route
 app.get("/", (req, res) => res.send("🚀 Career GPS Backend is Running Successfully!"));
 

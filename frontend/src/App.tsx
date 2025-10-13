@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Router>
-        <div className="container mx-auto py-8 animate-fade">
+        <div className="animate-fade">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />

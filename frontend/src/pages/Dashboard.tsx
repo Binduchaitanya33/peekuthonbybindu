@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Briefcase, BookmarkCheck, Users, TrendingUp } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -53,10 +54,10 @@ export default function Dashboard() {
           <motion.div variants={fadeInUp} className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-foreground">Recommended For You</h2>
-              <a href="/job-guidance" className="text-primary hover:opacity-80 font-medium group inline-flex items-center">
+              <Link to="/job-guidance" className="text-primary hover:opacity-80 font-medium group inline-flex items-center">
                 View All
                 <TrendingUp className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendedJobs.map((job) => (
@@ -68,32 +69,35 @@ export default function Dashboard() {
           <motion.div variants={fadeInUp}>
             <h2 className="text-2xl font-bold text-foreground mb-6">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <motion.a
-                href="/ai-success-predictor"
-                whileHover={{ y: -8 }}
-                className="card backdrop-blur-xl bg-gradient-to-r from-primary/20 to-info/20 border border-primary/20 shadow-lg shadow-primary/10 hover:shadow-primary/20 group"
-              >
-                <h3 className="text-xl font-semibold mb-2 text-foreground">Check Your Readiness</h3>
-                <p className="text-foreground/70">Use our AI predictor to assess your career readiness</p>
-              </motion.a>
+              <Link to="/ai-success-predictor">
+                <motion.div
+                  whileHover={{ y: -8 }}
+                  className="card backdrop-blur-xl bg-gradient-to-r from-primary/20 to-info/20 border border-primary/20 shadow-lg shadow-primary/10 hover:shadow-primary/20 group"
+                >
+                  <h3 className="text-xl font-semibold mb-2 text-foreground">Check Your Readiness</h3>
+                  <p className="text-foreground/70">Use our AI predictor to assess your career readiness</p>
+                </motion.div>
+              </Link>
 
-              <motion.a
-                href="/mentor-connect"
-                whileHover={{ y: -8 }}
-                className="card backdrop-blur-xl bg-gradient-to-r from-info/20 to-success/20 border border-info/20 shadow-lg shadow-info/10 hover:shadow-info/20 group"
-              >
-                <h3 className="text-xl font-semibold mb-2 text-foreground">Find a Mentor</h3>
-                <p className="text-foreground/70">Connect with industry experts for guidance</p>
-              </motion.a>
+              <Link to="/mentor-connect">
+                <motion.div
+                  whileHover={{ y: -8 }}
+                  className="card backdrop-blur-xl bg-gradient-to-r from-info/20 to-success/20 border border-info/20 shadow-lg shadow-info/10 hover:shadow-info/20 group"
+                >
+                  <h3 className="text-xl font-semibold mb-2 text-foreground">Find a Mentor</h3>
+                  <p className="text-foreground/70">Connect with industry experts for guidance</p>
+                </motion.div>
+              </Link>
 
-              <motion.a
-                href="/study-materials"
-                whileHover={{ y: -8 }}
-                className="card backdrop-blur-xl bg-gradient-to-r from-warning/20 to-success/20 border border-warning/20 shadow-lg shadow-warning/10 hover:shadow-warning/20 group"
-              >
-                <h3 className="text-xl font-semibold mb-2 text-foreground">Learn New Skills</h3>
-                <p className="text-foreground/70">Access curated study materials and courses</p>
-              </motion.a>
+              <Link to="/study-materials">
+                <motion.div
+                  whileHover={{ y: -8 }}
+                  className="card backdrop-blur-xl bg-gradient-to-r from-warning/20 to-success/20 border border-warning/20 shadow-lg shadow-warning/10 hover:shadow-warning/20 group"
+                >
+                  <h3 className="text-xl font-semibold mb-2 text-foreground">Learn New Skills</h3>
+                  <p className="text-foreground/70">Access curated study materials and courses</p>
+                </motion.div>
+              </Link>
             </div>
           </motion.div>
         </motion.div>

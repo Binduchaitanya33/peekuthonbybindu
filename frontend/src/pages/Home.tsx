@@ -21,31 +21,37 @@ export default function Home() {
       icon: Briefcase,
       title: 'Job Guidance',
       description: 'Discover career opportunities tailored to your skills and interests',
+      to: '/job-guidance'
     },
     {
       icon: BookOpen,
       title: 'Study Materials',
       description: 'Access curated learning resources recommended by industry experts',
+      to: '/study-materials'
     },
     {
       icon: Users,
       title: 'Mentor Connect',
       description: 'Connect with experienced professionals in your field',
+      to: '/mentor-connect'
     },
     {
       icon: Calendar,
       title: 'Vacancy Tracker',
       description: 'Stay updated with latest job openings and application deadlines',
+      to: '/vacancy-tracker'
     },
     {
       icon: TrendingUp,
       title: 'Career Analytics',
       description: 'Track your progress and get insights on your career journey',
+      to: '/dashboard'
     },
     {
       icon: Brain,
       title: 'AI Success Predictor',
       description: 'Get personalized predictions for your career success',
+      to: '/ai-success-predictor'
     },
   ];
 

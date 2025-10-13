@@ -1,11 +1,24 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Briefcase } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Briefcase, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    navigate('/');
+  };
 
   const links = [
     { path: '/', label: 'Home' },
@@ -33,11 +46,10 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive(link.path)
-                    ? 'bg-primary/20 text-primary shadow-lg shadow-primary/20'
-                    : 'text-foreground/80 hover:text-primary hover:bg-primary/10'
-                }`}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
+                  ? 'bg-primary/20 text-primary shadow-lg shadow-primary/20'
+                  : 'text-foreground/80 hover:text-primary hover:bg-primary/10'
+                  }`}
               >
                 {link.label}
               </Link>
@@ -45,18 +57,29 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
-            <Link
-              to="/login"
-              className="button-secondary hover:bg-secondary/80 text-sm"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="button-primary"
-            >
-              Sign Up
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/login"
+                  className="button-secondary hover:bg-secondary/80 text-sm"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="button-primary"
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="button-secondary hover:bg-secondary/80 text-sm flex items-center gap-2"
+              >
+                Logout <LogOut size={16} />
+              </button>
+            )}
           </div>
 
           <button
@@ -82,22 +105,42 @@ export default function Navbar() {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`block px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive(link.path)
-                      ? 'bg-primary/20 text-primary shadow-lg shadow-primary/20'
-                      : 'text-foreground/80 hover:text-primary hover:bg-primary/10'
-                  }`}
+                  className={`block px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
+                    ? 'bg-primary/20 text-primary shadow-lg shadow-primary/20'
+                    : 'text-foreground/80 hover:text-primary hover:bg-primary/10'
+                    }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <Link
-                to="/login"
-                onClick={() => setIsOpen(false)}
-                className="button-secondary block w-full text-center"
-              >
-                Login
-              </Link>
+              {!isAuthenticated ? (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="button-secondary block w-full text-center"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={() => setIsOpen(false)}
+                    className="button-primary block w-full text-center"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  className="button-secondary w-full flex items-center justify-center gap-2"
+                >
+                  Logout <LogOut size={16} />
+                </button>
+              )}
               <Link
                 to="/signup"
                 onClick={() => setIsOpen(false)}

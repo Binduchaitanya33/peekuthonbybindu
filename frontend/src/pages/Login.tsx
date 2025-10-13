@@ -14,38 +14,63 @@ interface LoginResponse {
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
 
     try {
-      console.log('Attempting login with:', { email }); // Don't log password
+      // Basic validation
+      if (!email.includes('@')) {
+        setError('Please enter a valid email address');
+        setLoading(false);
+        return;
+      }
+
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters');
+        setLoading(false);
+        return;
+      }
 
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
         },
-        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
 
-      console.log('Response status:', response.status);
-
       const data = await response.json();
-      console.log('Response data:', data);
 
-      if (response.ok) {
+      if (response.ok && data.token) {
+        // Store token
         localStorage.setItem("token", data.token);
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+        }
+
+        // Store user data if available
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+
+        // Redirect to dashboard
         navigate("/dashboard");
       } else {
-        alert(data.message || "Login failed. Please check your email and password.");
+        setError(data.message || "Invalid email or password");
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert("Connection error. Please make sure you're registered and try again.");
+      setError("Unable to connect to the server. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,6 +97,12 @@ export default function Login() {
           variants={fadeInUp}
           className="card backdrop-blur-xl bg-card/40 border border-secondary/10 p-8"
         >
+          {error && (
+            <div className="mb-4 p-3 rounded bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
@@ -99,13 +130,20 @@ export default function Login() {
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input w-full pl-10"
+                  className="input w-full pl-10 pr-10"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-foreground/50 hover:text-primary focus:outline-none"
+                >
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
               </div>
             </div>
 
@@ -113,22 +151,26 @@ export default function Login() {
               <label className="flex items-center">
                 <input
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 text-primary bg-input border-secondary rounded focus:ring-2 focus:ring-primary"
                 />
                 <span className="ml-2 text-sm text-foreground/70">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-primary hover:opacity-80 font-medium">
+              <Link to="/forgot-password" className="text-sm text-primary hover:opacity-80 font-medium">
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: loading ? 1 : 1.02 }}
+              whileTap={{ scale: loading ? 1 : 0.98 }}
               type="submit"
-              className="button-primary w-full py-3 shadow-lg shadow-primary/20 hover:shadow-primary/40"
+              disabled={loading}
+              className={`button-primary w-full py-3 shadow-lg shadow-primary/20 hover:shadow-primary/40 ${loading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
             >
-              Sign In
+              {loading ? 'Signing In...' : 'Sign In'}
             </motion.button>
           </form>
 

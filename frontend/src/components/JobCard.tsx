@@ -24,7 +24,12 @@ export default function JobCard({ job }: JobCardProps) {
         </span>
       </div>
 
-      <p className="text-foreground/70 text-sm mb-4">{job.description}</p>
+      <p className="text-foreground/70 text-sm mb-4">
+        {job.description
+          .replace(/<[^>]*>/g, '') // Remove HTML tags
+          .slice(0, 100) // Take only first 100 characters
+          .trim() + '...'} {/* Add ellipsis */}
+      </p>
 
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-sm text-foreground/70">
@@ -57,10 +62,26 @@ export default function JobCard({ job }: JobCardProps) {
         )}
       </div>
 
-      <button className="button-primary w-full shadow-lg shadow-primary/20 hover:shadow-primary/40 flex items-center justify-center group">
-        View Details
-        <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-      </button>
+      <div className="grid grid-cols-2 gap-2">
+        <a
+          href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(job.title + ' ' + job.domain)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="button-primary flex items-center justify-center group"
+        >
+          LinkedIn Jobs
+          <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+        </a>
+        <a
+          href={`https://www.naukri.com/jobs-in-india?q=${encodeURIComponent(job.title)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="button-secondary flex items-center justify-center group"
+        >
+          Naukri.com
+          <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+        </a>
+      </div>
     </motion.div>
   );
 }

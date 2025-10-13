@@ -32,17 +32,18 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
 
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs font-medium text-foreground/60 uppercase">{resource.type}</span>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          resource.difficulty === 'Beginner' ? 'bg-success/20 text-success' :
-          resource.difficulty === 'Intermediate' ? 'bg-warning/20 text-warning' :
-          'bg-destructive/20 text-destructive'
-        }`}>
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${resource.difficulty === 'Beginner' ? 'bg-success/20 text-success' :
+            resource.difficulty === 'Intermediate' ? 'bg-warning/20 text-warning' :
+              'bg-destructive/20 text-destructive'
+          }`}>
           {resource.difficulty}
         </span>
       </div>
 
       <a
         href={resource.link}
+        target="_blank"
+        rel="noopener noreferrer"
         className="button-secondary w-full flex items-center justify-center group"
       >
         Access Resource

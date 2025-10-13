@@ -11,24 +11,49 @@ export default function AISuccessPredictor() {
     skills: '',
     education: '',
     experience: '',
-    projects: '',
   });
   const [prediction, setPrediction] = useState<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    let score = 0;
-    const skillsCount = formData.skills.split(',').filter((s) => s.trim()).length;
-    const projectsCount = formData.projects.split(',').filter((p) => p.trim()).length;
+    // The frontend no longer needs the hardcoded skill_indices or the mapping logic.
+    // It just needs to send the raw skill string and the other variables.
+    const payload = {
+      // Send the raw skill string from the textarea
+      skills: formData.skills,
 
-    score += Math.min(skillsCount * 8, 40);
-    score += formData.education === 'Masters' ? 25 : formData.education === 'Bachelors' ? 20 : 15;
-    score += Math.min(parseInt(formData.experience || '0') * 5, 25);
-    score += Math.min(projectsCount * 5, 10);
+      // Total experience in months
+      total_experience_months: parseInt(formData.experience || "0") * 12,
 
-    const finalScore = Math.min(Math.max(score, 40), 95);
-    setPrediction(finalScore);
+      // Map education level to numerical value
+      highest_degree_level:
+        formData.education === "PhD"
+          ? 3
+          : formData.education === "Masters"
+            ? 2
+            : 1, // Assuming Bachelors or other means 1
+    };
+
+    try {
+      const response = await fetch("http://127.0.0.1:5003/api/predict_success", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setPrediction(data.success_rate);
+      } else {
+        console.error("Prediction failed:", data);
+        alert("Prediction failed: " + data.detail);
+      }
+    } catch (error) {
+      console.error("Error connecting to API:", error);
+      alert("Error connecting to backend API.");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -110,21 +135,7 @@ export default function AISuccessPredictor() {
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="projects" className="block text-sm font-medium text-foreground mb-2">
-                    Notable Projects (comma-separated)
-                  </label>
-                  <textarea
-                    id="projects"
-                    name="projects"
-                    required
-                    value={formData.projects}
-                    onChange={handleChange}
-                    rows={3}
-                    className="w-full px-4 py-3 bg-background/50 border border-secondary/20 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-foreground placeholder:text-foreground/50"
-                    placeholder="E-commerce platform, Social media app, ML model"
-                  />
-                </div>
+
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -160,15 +171,15 @@ export default function AISuccessPredictor() {
                         {prediction >= 80
                           ? "You're excellently prepared for your dream role!"
                           : prediction >= 60
-                          ? "You're on the right track, keep building your skills!"
-                          : "There's room for growth - focus on expanding your expertise!"}
+                            ? "You're on the right track, keep building your skills!"
+                            : "There's room for growth - focus on expanding your expertise!"}
                       </p>
                       <p className="text-sm text-gray-700">
                         {prediction >= 80
                           ? "Your combination of skills, education, and experience positions you as a strong candidate. Consider applying to senior roles."
                           : prediction >= 60
-                          ? "Continue developing your skill set and working on impactful projects to boost your readiness score."
-                          : "Focus on gaining more practical experience, building projects, and expanding your technical skills."}
+                            ? "Continue developing your skill set and working on impactful projects to boost your readiness score."
+                            : "Focus on gaining more practical experience, building projects, and expanding your technical skills."}
                       </p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
