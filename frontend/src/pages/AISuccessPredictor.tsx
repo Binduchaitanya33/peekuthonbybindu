@@ -6,6 +6,8 @@ import Footer from '../components/Footer';
 import PredictionChart from '../components/PredictionChart';
 import { fadeInUp, staggerContainer } from '../animations/motionVariants';
 import axios from 'axios';
+// Use Vite env var if provided, otherwise default to localhost:5003
+const AI_BASE = import.meta.env.VITE_AI_URL || 'http://localhost:5003';
 
 export default function AISuccessPredictor() {
 
@@ -19,7 +21,7 @@ export default function AISuccessPredictor() {
 
   // Fetch skill-to-index mapping on mount
   useEffect(() => {
-    axios.get('http://localhost:5003/api/skills')
+    axios.get(`${AI_BASE}/api/skills`)
       .then(res => {
         const map: { [key: string]: number } = {};
         if (res.data && res.data.skills) {
@@ -29,7 +31,7 @@ export default function AISuccessPredictor() {
         }
         setSkillMap(map);
       })
-      .catch(() => setSkillMap({}));
+      .catch((err) => { console.error('Failed to fetch skills:', err); setSkillMap({}); });
   }, []);
 
 
@@ -59,9 +61,10 @@ export default function AISuccessPredictor() {
     };
 
     try {
-      const response = await axios.post('http://localhost:5003/api/predict_success', payload);
+      const response = await axios.post(`${AI_BASE}/api/predict_success`, payload);
       setPrediction(Math.round(response.data.success_rate * 100)); // Convert 0-1 float to percentage
     } catch (error) {
+      console.error('Prediction request failed:', error);
       alert('Prediction failed. Please try again.');
       setPrediction(null);
     }
@@ -182,15 +185,15 @@ export default function AISuccessPredictor() {
                         {prediction >= 80
                           ? "You're excellently prepared for your dream role!"
                           : prediction >= 60
-                          ? "You're on the right track, keep building your skills!"
-                          : "There's room for growth - focus on expanding your expertise!"}
+                            ? "You're on the right track, keep building your skills!"
+                            : "There's room for growth - focus on expanding your expertise!"}
                       </p>
                       <p className="text-base text-white/90">
                         {prediction >= 80
                           ? "Your combination of skills, education, and experience positions you as a strong candidate. Consider applying to senior roles."
                           : prediction >= 60
-                          ? "Continue developing your skill set and working on impactful projects to boost your readiness score."
-                          : "Focus on gaining more practical experience, building projects, and expanding your technical skills."}
+                            ? "Continue developing your skill set and working on impactful projects to boost your readiness score."
+                            : "Focus on gaining more practical experience, building projects, and expanding your technical skills."}
                       </p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
