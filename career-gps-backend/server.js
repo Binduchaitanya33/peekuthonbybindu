@@ -60,7 +60,7 @@ app.use("/api/ai", aiRoutes);
 app.get("/api/health", (req, res) => res.status(200).json({ status: "ok" }));
 
 // Default Route
-app.get("/", (req, res) => res.send("🚀 Career GPS Backend is Running Successfully!"));
+app.get("/", (req, res) => res.send("🚀 CareerGPS Backend is Running Successfully!"));
 
 // Start Server
 const PORT = process.env.PORT || 5000;

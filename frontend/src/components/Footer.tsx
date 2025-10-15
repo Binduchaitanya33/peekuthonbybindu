@@ -1,4 +1,4 @@
-import { Briefcase, Mail, MapPin, Phone } from 'lucide-react';
+import { Briefcase, Mail, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
@@ -10,7 +10,7 @@ export default function Footer() {
             <div className="flex items-center space-x-2 mb-4">
               <Briefcase className="h-6 w-6 text-primary" />
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-info bg-clip-text text-transparent">
-                Career GPS
+                CareerGPS
               </span>
             </div>
             <p className="text-sm text-foreground/70">
@@ -93,7 +93,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-secondary/20 mt-8 pt-8 text-center text-sm text-foreground/60">
-          <p>&copy; 2025 Career GPS. All rights reserved.</p>
+          <p>&copy; 2025 CareerGPS. All rights reserved.</p>
         </div>
       </div>
     </footer>
