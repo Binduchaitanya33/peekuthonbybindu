@@ -111,7 +111,7 @@ export default function Signup() {
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
             <Briefcase className="h-10 w-10 text-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-info bg-clip-text text-transparent">
-              CareerFinder
+              Career GPS
             </span>
           </Link>
           <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Account</h1>

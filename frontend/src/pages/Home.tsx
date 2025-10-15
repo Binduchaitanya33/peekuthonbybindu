@@ -59,7 +59,7 @@ export default function Home() {
     {
       name: 'Sarah Chen',
       role: 'Software Engineer',
-      text: 'CareerFinder helped me land my dream job at a top tech company. The mentor connections were invaluable!',
+      text: 'Career GPS helped me land my dream job at a top tech company. The mentor connections were invaluable!',
     },
     {
       name: 'Michael Rodriguez',
@@ -152,7 +152,7 @@ export default function Home() {
               variants={fadeInUp}
               className="text-4xl font-bold text-foreground mb-6"
             >
-              Why Choose CareerFinder?
+              Why Choose Career GPS?
             </motion.h2>
             <motion.div
               variants={fadeInUp}
@@ -220,7 +220,7 @@ export default function Home() {
               Ready to Transform Your Career?
             </h2>
             <p className="text-xl text-foreground/80 mb-8">
-              Join thousands of professionals who have found their dream jobs with CareerFinder
+              Join thousands of professionals who have found their dream jobs with Career GPS
             </p>
             <Link
               to="/signup"

@@ -38,7 +38,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2 animate-fade">
             <Briefcase className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-info bg-clip-text text-transparent">CareerFinder</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-info bg-clip-text text-transparent">Career GPS</span>
           </Link>
 
           <div className="hidden md:flex space-x-1">
