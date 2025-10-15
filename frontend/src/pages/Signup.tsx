@@ -5,12 +5,6 @@ import { Briefcase, Mail, Lock, User } from 'lucide-react';
 import { fadeInUp } from '../animations/motionVariants';
 import API_BASE_URL from "../config";
 
-interface SignupResponse {
-  token: string;
-  message: string;
-  user: { id: string; name: string; email: string };
-}
-
 export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -43,24 +37,12 @@ export default function Signup() {
 
       console.log('Attempting registration with:', { name, email, role });
 
-      // First, check if the server is reachable
-      try {
-        const healthCheck = await fetch(`${API_BASE_URL}/health`);
-        if (!healthCheck.ok) {
-          throw new Error('Server is not responding');
-        }
-      } catch (error) {
-        console.error('Server health check failed:', error);
-        setError('Server is not available. Please try again in a few minutes.');
-        return;
-      }
-
+      // Directly attempt registration request
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Origin": window.location.origin
         },
         mode: 'cors',
         body: JSON.stringify({ name, email, password, role }),
@@ -71,11 +53,9 @@ export default function Signup() {
       console.log('Response data:', data);
 
       if (response.ok) {
-        // Registration successful
         alert("Registration successful! Please login to continue.");
         navigate('/login');
       } else {
-        // Handle different error cases
         if (response.status === 409) {
           setError("This email is already registered. Please try logging in instead.");
         } else if (response.status === 400) {
@@ -87,7 +67,7 @@ export default function Signup() {
         }
         console.error('Registration failed:', response.status, data);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
         setError("Cannot reach the server. Please check your internet connection and try again.");
@@ -111,7 +91,7 @@ export default function Signup() {
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
             <Briefcase className="h-10 w-10 text-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-info bg-clip-text text-transparent">
-              Career GPS
+              CareerGPS
             </span>
           </Link>
           <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Account</h1>

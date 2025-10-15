@@ -5,12 +5,6 @@ import { Briefcase, Mail, Lock } from 'lucide-react';
 import { fadeInUp } from '../animations/motionVariants';
 import API_BASE_URL from "../config"; // backend URL
 
-interface LoginResponse {
-  token: string;
-  message: string;
-  user: { id: string; name: string; email: string };
-}
-
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -86,7 +80,7 @@ export default function Login() {
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
             <Briefcase className="h-10 w-10 text-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-info bg-clip-text text-transparent">
-              Career GPS
+              CareerGPS
             </span>
           </Link>
           <h1 className="text-3xl font-bold text-foreground mb-2">Welcome Back</h1>
